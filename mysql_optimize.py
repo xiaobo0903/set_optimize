@@ -38,7 +38,7 @@ def load_my():
         else:
             mypath = input("\n读输入mysql数据库的配置文件地址(如:/etc/mysql/my.cnf),按'q'可退出: ")
         if mypath == 'q':
-            exit()
+            return
 
         #print(mypath)
         if os.path.isfile(mypath):
