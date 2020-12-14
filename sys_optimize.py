@@ -18,6 +18,8 @@ except ImportError:
     # Python2
     import ConfigParser
     import StringIO
+from cut_comm import cut_comm
+
 #读取linux系统中的配置文件 sysctl.conf
 sysconf = "/etc/sysctl.conf"
 optconf = "./data/linux_sysctl.ini"
@@ -28,8 +30,14 @@ odict = {}
 def load_sysctl():
 
     #在此使用这个方法，是为了py2和py3的兼容性
-    ini_str = '[system]\n' + open(sysconf, 'r').read()
-    ini_fp = StringIO.StringIO(ini_str)
+    fo = open(sysconf, 'r')
+    nstr = "[system]\n"
+    with open(sysconf, 'r') as fo:
+        for line in fo:
+            nline = cut_comm(line)
+            nstr  = nstr+nline+"\n"
+
+    ini_fp = StringIO.StringIO(nstr)
     config = ConfigParser.ConfigParser()
     config.readfp(ini_fp)
     for item in config.items("system"):
@@ -84,7 +92,10 @@ def diff_sys_conf():
         print("%-50s %-30s %-30s %-10s %-s"%(k, s, o, flag, n))
     
     print("按任意键继续......")
-    raw_input()
+    try:
+        raw_input()
+    except:
+        input()
     mk_standard_opt()
 #生成标准的优化项内容；
 def mk_standard_opt():
